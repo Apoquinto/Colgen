@@ -4,14 +4,12 @@ figma.ui.onmessage = msg => {
   if (msg.type === 'create-rectangles') {
     const nodes: SceneNode[] = [];
     const { hslValues, maxElements, step } = msg;
-    const currentValue: HSL = { ...hslValues };
-    for (let i = 0; i < maxElements && currentValue.l + step < 100; i++) {
-      const rect = figma.createRectangle();
-      rect.y = i * 100;
-      rect.fills = [{type: 'SOLID', color: hslToRgb(currentValue)}];
-      currentValue.l += step;
-      figma.currentPage.appendChild(rect);
-      nodes.push(rect);
+    const currentColor: HSL = { ...hslValues };
+    for (let i = 0; i < maxElements && currentColor.l + step < 100; i++) {
+      const colorPreview = createColorPreview(currentColor, { x: 0, y: 100 * i });
+      currentColor.l += step;
+      figma.currentPage.appendChild(colorPreview);
+      nodes.push(colorPreview);
     }
     figma.currentPage.selection = nodes;
     figma.viewport.scrollAndZoomIntoView(nodes);
@@ -20,17 +18,38 @@ figma.ui.onmessage = msg => {
   figma.closePlugin();
 };
 
+const createColorPreview = (color: HSL, position: Position = { x: 0, y: 0 }) => {
+  const colorPreview = figma.createRectangle();
+  colorPreview.fills = [{type: 'SOLID', color: hslToRgb(color)}];
+  colorPreview.x = position.x;
+  colorPreview.y = position.y;
+  return colorPreview;
+}
+
+const createColorLabel = (content: string) => {
+  const text = figma.createText()
+  text.fontName = {family: 'Roboto', style: 'Regular'}
+  text.characters = content;
+  text.fontSize = 24;
+  return text 
+}
+
 interface HSL {
   h: number,
   s: number,
   l: number,
-}
+};
 
 interface message {
   type: string,
   hslValues: HSL,
   maxElements: number,
   step: number,
+};
+
+interface Position {
+  x: number,
+  y: number,
 };
 
 // Method found in: https://www.30secondsofcode.org/js/s/hsl-to-rgb
