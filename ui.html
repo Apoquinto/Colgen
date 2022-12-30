@@ -1,22 +1,22 @@
-<link rel="stylesheet" href="./style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thomas-lowry/figma-plugin-ds/dist/figma-plugin-ds.css">
 
 <main class="plugin-container">
-  <h2>Colgen</h2>
+  <h3 class="">Colgen</h3>
   <div class="field">
-    <label for="HSL">Initial value</label>
-    <div class="HSLValue selector">
-      <input id="HValue" type="text" placeholder="0">
-      <input id="SValue" type="text" placeholder="0">
-      <input id="LValue" type="text" placeholder="0">
+    <label for="hsl" class="section-title">Base color</label>
+    <div class="hsl-selector">
+      <input id="HValue" class="input__field" type="text" placeholder="h">
+      <input id="SValue" class="input__field" type="text" placeholder="s">
+      <input id="LValue" class="input__field" type="text" placeholder="l">
     </div>
   </div>
   <div class="field">
-    <label for="step">Step</label>
-    <input id="step" type="text" placeholder="0">
+    <label for="step" class="section-title">Step</label>
+    <input id="step" class="input__field" type="text" placeholder="0">
   </div>
   <div class="field">
-    <label for="noElements"># elements</label>
-    <input id="noElements" type="text" placeholder="0">
+    <label for="noElements" class="section-title"># elements</label>
+    <input id="noElements" class="input__field" type="text" placeholder="0">
   </div>
   <button 
     onclick="onGenerateClick()"
@@ -44,3 +44,32 @@ const onGenerateClick = () => {
 }
 
 </script>
+
+<style>
+  .plugin-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 4px 1rem;
+  }
+
+  h3 {
+    margin: 0;
+  }
+
+  .hsl-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 4px;
+  }
+
+  .field {
+    display: flex;
+    gap: 4px;
+  }
+
+  input {
+    width: 100%;
+  }
+</style>
