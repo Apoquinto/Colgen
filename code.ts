@@ -7,8 +7,8 @@ figma.ui.onmessage = msg => {
     const currentValue: HSL = { ...hslValues };
     for (let i = 0; i < maxElements && currentValue.l + step < 100; i++) {
       const rect = figma.createRectangle();
-      rect.x = i * 150;
-      rect.fills = [{type: 'SOLID', color: {r: 1, g: 0.5, b: 0}}];
+      rect.y = i * 100;
+      rect.fills = [{type: 'SOLID', color: hslToRgb(currentValue)}];
       currentValue.l += step;
       figma.currentPage.appendChild(rect);
       nodes.push(rect);
@@ -34,8 +34,10 @@ interface message {
 };
 
 // Method found in: https://www.30secondsofcode.org/js/s/hsl-to-rgb
-const hslToRgb = (hslValue: HSL): RGB => {
+const hslToRgb = (source: HSL): RGB => {
   let rgbValue = { r: 0, g: 0, b: 0 };
+
+  let hslValue = { ...source };
 
   hslValue.s /= 100;
   hslValue.l /= 100;
@@ -45,9 +47,9 @@ const hslToRgb = (hslValue: HSL): RGB => {
   const f = (n: number): number =>
     hslValue.l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
 
-  rgbValue.r = Math.round(f(0) * 255);
-  rgbValue.b = Math.round(f(4) * 255);
-  rgbValue.g = Math.round(f(8) * 255);
+  rgbValue.r = f(0);
+  rgbValue.b = f(4);
+  rgbValue.g = f(8);
 
   return rgbValue;
 }

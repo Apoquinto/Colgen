@@ -11,8 +11,8 @@
     </div>
     <label for="step" class="section-title">Step</label>
     <input id="step" class="input__field" type="text" placeholder="0">
-    <label for="noElements" class="section-title"># elements</label>
-    <input id="noElements" class="input__field" type="text" placeholder="0">
+    <label for="maxElements" class="section-title"># elements</label>
+    <input id="maxElements" class="input__field" type="text" placeholder="0">
   </div>
   <button 
     onclick="onGenerateClick()"
@@ -24,19 +24,19 @@
 
 <script>
 
-const $ = (id) => document.getElementById(id).value
+const $ = (id) => document.getElementById(id).value;
 
 const getHSLValues = () => ({
-    h: $("HValue"),
-    s: $("SValue"),
-    l: $("LValue")
-  })
+    h: parseInt($("HValue")),
+    s: parseInt($("SValue")),
+    l: parseInt($("LValue"))
+  });
 
 const onGenerateClick = () => {
-  const hslValue = getHSLValues()
-  const step = $("step")
-  const noElements = $("noElements")
-  console.log(hslValue, step, noElements)
+  const hslValues = getHSLValues();
+  const step = parseInt($("step"));
+  const maxElements = parseInt($("maxElements"));
+  parent.postMessage({ pluginMessage: { type: "create-rectangles", hslValues, step, maxElements } }, '*')
 }
 
 </script>
