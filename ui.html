@@ -1,19 +1,46 @@
 <link rel="stylesheet" href="./style.css">
 
-<div class="plugin-container">
+<main class="plugin-container">
   <h2>Colgen</h2>
+  <div class="field">
+    <label for="HSL">Initial value</label>
+    <div class="HSLValue selector">
+      <input id="HValue" type="text" placeholder="0">
+      <input id="SValue" type="text" placeholder="0">
+      <input id="LValue" type="text" placeholder="0">
+    </div>
+  </div>
+  <div class="field">
+    <label for="step">Step</label>
+    <input id="step" type="text" placeholder="0">
+  </div>
+  <div class="field">
+    <label for="noElements"># elements</label>
+    <input id="noElements" type="text" placeholder="0">
+  </div>
   <button 
     onclick="onGenerateClick()"
     class="button button--primary w-full"
   >
     Generate colors
   </button>
-</div>
+</main>
 
 <script>
 
+const $ = (id) => document.getElementById(id).value
+
+const getHSLValues = () => ({
+    h: $("HValue"),
+    s: $("SValue"),
+    l: $("LValue")
+  })
+
 const onGenerateClick = () => {
-  console.log("WORKS!")
+  const hslValue = getHSLValues()
+  const step = $("step")
+  const noElements = $("noElements")
+  console.log(hslValue, step, noElements)
 }
 
 </script>
