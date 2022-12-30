@@ -1,0 +1,10 @@
+{
+  "name": "colgen",
+  "id": "1190508782274538549",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": [
+    "figma"
+  ],
+  "ui": "ui.html"
+}
