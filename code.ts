@@ -6,33 +6,44 @@ figma.ui.onmessage = msg => {
     const { hslValues, maxElements, step } = msg;
     const currentColor: HSL = { ...hslValues };
     for (let i = 0; i < maxElements && currentColor.l + step < 100; i++) {
-      const colorPreview = createColorPreview(currentColor, { x: 0, y: 100 * i });
-      currentColor.l += step;
+      let RGBValue = { ...hslToRgb(currentColor) };
+      let colorCode = `${ getHSLCode(currentColor) } | ${ getRGBCode(RGBValue) }`;
+      let colorPreview = createColorPreview(RGBValue, { x: 0, y: 100 * i });
       figma.currentPage.appendChild(colorPreview);
       nodes.push(colorPreview);
+      createColorLabel(colorCode, { x: 120, y: 100 * i });
+      currentColor.l += step;
     }
     figma.currentPage.selection = nodes;
     figma.viewport.scrollAndZoomIntoView(nodes);
   }
-
-  figma.closePlugin();
 };
 
-const createColorPreview = (color: HSL, position: Position = { x: 0, y: 0 }) => {
+const createColorPreview = (color: RGB, position: Position = { x: 0, y: 0 }) => {
   const colorPreview = figma.createRectangle();
-  colorPreview.fills = [{type: 'SOLID', color: hslToRgb(color)}];
+  colorPreview.fills = [{ type: 'SOLID', color }];
   colorPreview.x = position.x;
   colorPreview.y = position.y;
   return colorPreview;
 }
 
-const createColorLabel = (content: string) => {
-  const text = figma.createText()
-  text.fontName = {family: 'Roboto', style: 'Regular'}
-  text.characters = content;
-  text.fontSize = 24;
-  return text 
+const createColorLabel = async (content: string, position: Position = { x: 0, y: 0 })=> {
+  const colorLabel = figma.createText();
+
+  colorLabel.x = position.x;
+  colorLabel.y = position.y;
+
+  await figma.loadFontAsync(colorLabel.fontName);
+
+  colorLabel.characters = content;
+  colorLabel.fontSize = 16;
+
+  return colorLabel;
 }
+
+const getHSLCode = (hsl: HSL) => `HSL(${ hsl.h } ${ hsl.s } ${ hsl.l })`;
+
+const getRGBCode = (rgb: RGB) => `RGB(${ rgb.r } ${ rgb.g } ${ rgb.b })`;
 
 interface HSL {
   h: number,
