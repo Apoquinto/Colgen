@@ -1,21 +1,22 @@
-figma.showUI(__html__);
+figma.showUI(__html__, { height: 220 });
 
-figma.ui.onmessage = msg => {
-  if (msg.type === 'create-rectangles') {
+figma.ui.onmessage = ( props: Props ) => {
+  if (props.type === 'create-rectangles') {
+    const { paletteName, hslValues, maxElements, step } = props;
     const selection: SceneNode[] = [];
     // Setup frame
     const paletteFrame: FrameNode = figma.createFrame();
-    paletteFrame.name = "Palette";
+    paletteFrame.name = `${ paletteName } palette`;
     paletteFrame.layoutMode = "VERTICAL";
     paletteFrame.cornerRadius = 8;
     // Generate tones
-    const { hslValues, maxElements, step } = msg;
     let HSLValue: HSL = { ...hslValues };
-    let RGBValue: RGB, colorCode: string, colorPreview: RectangleNode;
+    let RGBValue: RGB, colorName: string, colorCode: string, colorPreview: RectangleNode;
     for (let i = 0; i < maxElements && HSLValue.l + step < 100; i++, HSLValue.l += step) {
       RGBValue = { ...hslToRgb(HSLValue) };
+      colorName = `${paletteName}-${ HSLValue.l }`;
       colorCode = `${ getHSLCode(HSLValue) } | ${ getRGBCode(RGBValue) }`;
-      colorPreview = createColorPreview(RGBValue, { x: 0, y: 100 * i });
+      colorPreview = createColorPreview(RGBValue, colorName, { x: 0, y: 100 * i });
       createColorLabel(colorCode, { x: 120, y: 100 * i });
       paletteFrame.appendChild(colorPreview);
     }
@@ -26,8 +27,9 @@ figma.ui.onmessage = msg => {
   }
 };
 
-const createColorPreview = (color: RGB, position: Position = { x: 0, y: 0 }) => {
+const createColorPreview = (color: RGB, name: string, position: Position = { x: 0, y: 0 }) => {
   const colorPreview = figma.createRectangle();
+  colorPreview.name = `${name}`;
   colorPreview.fills = [{ type: 'SOLID', color }];
   colorPreview.x = position.x;
   colorPreview.y = position.y;
@@ -58,8 +60,9 @@ interface HSL {
   l: number,
 };
 
-interface message {
+interface Props {
   type: string,
+  paletteName: string,
   hslValues: HSL,
   maxElements: number,
   step: number,

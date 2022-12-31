@@ -2,8 +2,8 @@
 
 <main class="plugin-container">
   <div class="form">
-    <label for="colorName" class="section-title">Color name</label>
-    <input id="colorName" class="input__field" type="text" placeholder="oasis">
+    <label for="paletteName" class="section-title">Color name</label>
+    <input id="paletteName" class="input__field" type="text" placeholder="oasis">
     <label for="HValue" class="section-title">Base color</label>
     <div class="hsl-selector">
       <input id="HValue" class="input__field" type="text" placeholder="h">
@@ -34,11 +34,11 @@ const getHSLValues = () => ({
   });
 
 const onGenerateClick = () => {
-  const colorName = $("colorName");
+  const paletteName = $("paletteName");
   const hslValues = getHSLValues();
   const step = parseInt($("step"));
   const maxElements = parseInt($("maxElements"));
-  parent.postMessage({ pluginMessage: { type: "create-rectangles", colorName, hslValues, step, maxElements } }, '*')
+  parent.postMessage({ pluginMessage: { type: "create-rectangles", paletteName, hslValues, step, maxElements } }, '*')
 }
 
 </script>
