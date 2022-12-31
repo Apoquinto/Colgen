@@ -2,20 +2,27 @@ figma.showUI(__html__);
 
 figma.ui.onmessage = msg => {
   if (msg.type === 'create-rectangles') {
-    const nodes: SceneNode[] = [];
+    const selection: SceneNode[] = [];
+    // Setup frame
+    const paletteFrame: FrameNode = figma.createFrame();
+    paletteFrame.name = "Palette";
+    paletteFrame.layoutMode = "VERTICAL";
+    paletteFrame.cornerRadius = 8;
+    // Generate tones
     const { hslValues, maxElements, step } = msg;
-    const currentColor: HSL = { ...hslValues };
-    for (let i = 0; i < maxElements && currentColor.l + step < 100; i++) {
-      let RGBValue = { ...hslToRgb(currentColor) };
-      let colorCode = `${ getHSLCode(currentColor) } | ${ getRGBCode(RGBValue) }`;
-      let colorPreview = createColorPreview(RGBValue, { x: 0, y: 100 * i });
-      figma.currentPage.appendChild(colorPreview);
-      nodes.push(colorPreview);
+    let HSLValue: HSL = { ...hslValues };
+    let RGBValue: RGB, colorCode: string, colorPreview: RectangleNode;
+    for (let i = 0; i < maxElements && HSLValue.l + step < 100; i++, HSLValue.l += step) {
+      RGBValue = { ...hslToRgb(HSLValue) };
+      colorCode = `${ getHSLCode(HSLValue) } | ${ getRGBCode(RGBValue) }`;
+      colorPreview = createColorPreview(RGBValue, { x: 0, y: 100 * i });
       createColorLabel(colorCode, { x: 120, y: 100 * i });
-      currentColor.l += step;
+      paletteFrame.appendChild(colorPreview);
     }
-    figma.currentPage.selection = nodes;
-    figma.viewport.scrollAndZoomIntoView(nodes);
+    // Focus selection
+    selection.push(paletteFrame);
+    figma.currentPage.selection = selection;
+    figma.viewport.scrollAndZoomIntoView(selection);
   }
 };
 
