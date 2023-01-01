@@ -23,4 +23,4 @@ export const hslToRgb = (source: HSL): RGB => {
 
 export const getHSLCode = (hsl: HSL) => `HSL(${ hsl.h } ${ hsl.s } ${ hsl.l })`;
 
-export const getRGBCode = (rgb: RGB) => `RGB(${ rgb.r } ${ rgb.g } ${ rgb.b })`;
+export const getRGBCode = (rgb: RGB) => `RGB(${ Math.round(rgb.r * 255) } ${ Math.round(rgb.g * 255) } ${ Math.round(rgb.b * 255) })`;
