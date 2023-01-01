@@ -5,15 +5,12 @@
   "main": "code.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "watch": "esbuild code.ts --outfile=code.js --bundle --minify --target=es6 --watch"
+    "watch": "esbuild src/code.ts --outfile=build/code.js --bundle --minify --target=es6 --watch"
   },
   "author": "",
   "license": "",
   "devDependencies": {
     "@figma/plugin-typings": "^1.57.1",
     "typescript": "*"
-  },
-  "dependencies": {
-    "esbuild": "0.16.12"
   }
 }
