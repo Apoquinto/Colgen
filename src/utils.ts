@@ -21,6 +21,29 @@ export const hslToRgb = (source: HSL): RGB => {
   return rgbValue;
 }
 
+const numberToHex = ( value: number ) => {
+  const hexRepresetation = value.toString(16);
+  return hexRepresetation.length > 1 ? hexRepresetation: `0${hexRepresetation}`;
+}
+
+/**
+ * Convert a RGB representation in range [0,1] to RGB representation in range [0,255]
+ * @param rgb 
+ */
+const getRGBDigits = ( rgb: RGB ) => ({ 
+  rDigit: Math.round(rgb.r * 255), 
+  gDigit: Math.round(rgb.g * 255),
+  bDigit: Math.round(rgb.b * 255)
+});
+
 export const getHSLCode = (hsl: HSL) => `HSL(${ hsl.h } ${ hsl.s } ${ hsl.l })`;
 
-export const getRGBCode = (rgb: RGB) => `RGB(${ Math.round(rgb.r * 255) } ${ Math.round(rgb.g * 255) } ${ Math.round(rgb.b * 255) })`;
+export const getRGBCode = (rgb: RGB) => {
+  const { rDigit, gDigit, bDigit } = getRGBDigits(rgb);
+  return `RGB( ${ rDigit } ${ gDigit } ${ bDigit } )`;
+};
+
+export const getHexCode = (rgb: RGB) => {
+  const { rDigit, gDigit, bDigit } = getRGBDigits(rgb);
+  return `#${ numberToHex(rDigit) }${ numberToHex(gDigit) }${ numberToHex(bDigit) }`.toUpperCase();
+};
