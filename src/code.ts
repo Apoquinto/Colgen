@@ -1,5 +1,5 @@
 import { HSL, Position, Props } from "./types";
-import { hslToRgb, getHSLCode, getRGBCode } from "./utils";
+import { hslToRgb, getHSLCode, getRGBCode, getHexCode } from "./utils";
 
 figma.showUI(__html__, { height: 220 });
 
@@ -15,10 +15,10 @@ figma.ui.onmessage = ( props: Props ) => {
     // Generate tones
     let HSLValue: HSL = { ...hslValues };
     let RGBValue: RGB, colorName: string, colorCode: string, colorPreview: RectangleNode;
-    for (let i = 0; i < maxElements && HSLValue.l + step < 100; i++, HSLValue.l += step) {
+    for (let i = 0; i < maxElements && HSLValue.l + step <= 100; i++, HSLValue.l += step) {
       RGBValue = { ...hslToRgb(HSLValue) };
       colorName = `${paletteName}-${ HSLValue.l }`;
-      colorCode = `${ getHSLCode(HSLValue) } | ${ getRGBCode(RGBValue) }`;
+      colorCode = `${ getHSLCode(HSLValue) } | ${ getRGBCode(RGBValue) } | ${ getHexCode(RGBValue) }`;
       colorPreview = createColorPreview(RGBValue, colorName, { x: 0, y: 100 * i });
       createColorLabel(colorCode, { x: 120, y: 100 * i });
       paletteFrame.appendChild(colorPreview);
