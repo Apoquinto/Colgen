@@ -11,7 +11,7 @@ export class Variant {
     this.pallete = pallete;
     this.color = color;
     this.name = `${ pallete }-${ 1000 - color.l * 10 }`
-    this.code = `${ this.formatToHEX() } | ${ this.formatToHSL() } | ${ this.formatToRGB }`;
+    this.code = `${ this.formatToHEX() } | ${ this.formatToHSL() } | ${ this.formatToRGB() }`;
     this.position = position;
   }
 
