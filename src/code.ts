@@ -1,34 +1,44 @@
-import { HSL, Position, Props } from "./types";
-import { hslToRgb, getHSLCode, getRGBCode, getHexCode } from "./utils";
+import { Position, Props } from "./types";
+import { Variant } from "./utils";
 
 figma.showUI(__html__, { height: 220 });
 
 figma.ui.onmessage = ( props: Props ) => {
   if (props.type === 'create-rectangles') {
-    const { paletteName, hslValues, maxElements, step } = props;
     const selection: SceneNode[] = [];
+    const { paletteName, hslValues, maxElements, step } = props;
     // Setup frame
     const paletteFrame: FrameNode = figma.createFrame();
     paletteFrame.name = `${ paletteName } palette`;
     paletteFrame.layoutMode = "VERTICAL";
     paletteFrame.cornerRadius = 8;
-    // Generate tones
-    let HSLValue: HSL = { ...hslValues };
-    let RGBValue: RGB, colorName: string, colorCode: string, colorPreview: RectangleNode;
-    for (let i = 0; i < maxElements && HSLValue.l + step <= 100; i++, HSLValue.l += step) {
-      RGBValue = { ...hslToRgb(HSLValue) };
-      colorName = `${paletteName}-${ HSLValue.l }`;
-      colorCode = `${ getHSLCode(HSLValue) } | ${ getRGBCode(RGBValue) } | ${ getHexCode(RGBValue) }`;
-      colorPreview = createColorPreview(RGBValue, colorName, { x: 0, y: 100 * i });
-      createColorLabel(colorCode, { x: 120, y: 100 * i });
-      paletteFrame.appendChild(colorPreview);
+    // Generate variants
+    let variants: Variant[] = Array.from(
+      { length: (Math.round((100 - hslValues.l) / step) ) },
+      (_, i) => new Variant(paletteName, {...hslValues, l: (i * step + hslValues.l)}, { x: 0, y: 108 * i })
+    );
+    if (variants.length > maxElements) variants = variants.slice(0, maxElements);
+    for(let variant of variants){
+      paletteFrame.appendChild(generateColorVariant(variant));
     }
-    // Focus selection
+    
     selection.push(paletteFrame);
     figma.currentPage.selection = selection;
     figma.viewport.scrollAndZoomIntoView(selection);
   }
 };
+
+const generateColorVariant = (variant: Variant) => {
+  const variantFrame: FrameNode = figma.createFrame();
+  // Setup frame layout
+  variantFrame.name = `${ variant }$ variant`;
+  variantFrame.layoutMode = "HORIZONTAL";
+
+  const colorPreview: RectangleNode = createColorPreview(variant.toRGB(), variant.name, { x: 0, y: 0 });
+  variantFrame.appendChild(colorPreview);
+  
+  return variantFrame;
+}
 
 const createColorPreview = (color: RGB, name: string, position: Position = { x: 0, y: 0 }) => {
   const colorPreview = figma.createRectangle();
@@ -39,7 +49,7 @@ const createColorPreview = (color: RGB, name: string, position: Position = { x: 
   return colorPreview;
 };
 
-const createColorLabel = async (content: string, position: Position = { x: 0, y: 0 })=> {
+const createLabel = async (content: string, position: Position = { x: 0, y: 0 })=> {
   const colorLabel = figma.createText();
 
   colorLabel.x = position.x;
