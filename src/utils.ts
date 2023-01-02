@@ -40,7 +40,7 @@ export class Variant {
 
   formatToHEX(): string {
     const { r, g, b } = this.toRGB();
-    return `#${ numberToHex(r) }${ numberToHex(g) }${ numberToHex(b) }`.toUpperCase();
+    return `#${ numberToHex(Math.round(r * 255)) }${ numberToHex(Math.round(g * 255)) }${ numberToHex(Math.round(b * 255)) }`.toUpperCase();
   }
 
   formatToHSL(): string {
