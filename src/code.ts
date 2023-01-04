@@ -11,6 +11,7 @@ figma.ui.onmessage = ( props: Props ) => {
     const paletteFrame: FrameNode = figma.createFrame();
     paletteFrame.name = `${ paletteName } palette`;
     paletteFrame.layoutMode = "VERTICAL";
+    paletteFrame.counterAxisSizingMode = "AUTO";
     paletteFrame.cornerRadius = 8;
     // Generate variants
     let variants: Variant[] = Array.from(
@@ -37,9 +38,9 @@ const generateColorVariant = async (variant: Variant) => {
   // Setup frame layout
   variantFrame.name = variant.name;
   variantFrame.layoutMode = "HORIZONTAL";
-  variantFrame.clipsContent = false;
+  variantFrame.counterAxisSizingMode = "AUTO";
 
-  const colorPreview: RectangleNode = createColorPreview(variant.toRGB(), variant.name, { x: 0, y: 0 });
+  const colorPreview: RectangleNode = createColorPreview(variant.toRGB(), { x: 0, y: 0 });
   const colorDescription: FrameNode = await createColorDescription(variant.name, variant.code);
   variantFrame.appendChild(colorPreview);
   variantFrame.appendChild(colorDescription);
@@ -51,6 +52,9 @@ const createColorDescription = async (name: string, code: string): Promise<Frame
   const descriptionFrame: FrameNode = figma.createFrame();
   descriptionFrame.name = "description";
   descriptionFrame.layoutMode = "VERTICAL";
+  descriptionFrame.counterAxisSizingMode = "AUTO";
+  descriptionFrame.primaryAxisSizingMode = "AUTO";
+  descriptionFrame.paddingTop = descriptionFrame.paddingLeft = descriptionFrame.paddingBottom = descriptionFrame.paddingRight = 8;
 
   const colorNameLabel: TextNode = await createLabel(name, { x: 0, y: 0 });
   const colorCodeLabel: TextNode = await createLabel(code, { x: 0, y: 0 });
@@ -62,7 +66,7 @@ const createColorDescription = async (name: string, code: string): Promise<Frame
   return descriptionFrame;
 }
 
-const createColorPreview = (color: RGB, name: string, position: Position = { x: 0, y: 0 }) => {
+const createColorPreview = (color: RGB, position: Position = { x: 0, y: 0 }) => {
   const colorPreview = figma.createRectangle();
   colorPreview.name = "Color preview";
   colorPreview.fills = [{ type: 'SOLID', color }];
